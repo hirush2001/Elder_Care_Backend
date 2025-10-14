@@ -8,18 +8,19 @@ public class Elder {
 
     @Id
     private String id;
-    private String name;
-    private int age;
+    private String email;
     private String password;
+    private String role;
 
-    // Constructors
+    // Default constructor
     public Elder() {
     }
 
-    public Elder(String name, int age, String password) {
-        this.name = name;
-        this.age = age;
+    // Parameterized constructor
+    public Elder(String email, String password, String role) {
+        this.email = email;
         this.password = password;
+        this.role = role;
     }
 
     // Getters and setters
@@ -27,20 +28,12 @@ public class Elder {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getEmail() {
+        return email;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -50,4 +43,13 @@ public class Elder {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
 }
