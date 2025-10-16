@@ -1,13 +1,16 @@
 package com.eldercare.eldercare.controller;
 
+import java.util.HashMap;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
+import com.eldercare.eldercare.model.Elder;
 import com.eldercare.eldercare.model.DailyHealthRecord;
 import com.eldercare.eldercare.service.*;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import java.util.Map;
+import java.util.HashMap;
 
 @RestController
 
@@ -22,8 +25,26 @@ public class DailyHealthREcordController {
 
     @PostMapping("/record")
     @PreAuthorize("hasRole('Elder')")
-    public DailyHealthRecord record(@RequestBody DailyHealthRecord healthrecord) {
-        return healthService.create(healthrecord);
-    }
+    public Map<String, Object> record(@RequestBody DailyHealthRecord healthrecord) {
 
+        // Get logged-in elder's email
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName(); // This is the email used to login
+
+        // Lookup Elder by email
+        Elder elder = healthService.findElderByEmail(email);
+
+        // Save record
+        DailyHealthRecord savedRecord = healthService.create(healthrecord);
+
+        // Generate message & send email if needed
+        String message = healthService.healthsummary(healthrecord, elder);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("record", savedRecord);
+        response.put("message", message);
+
+        return response;
+
+    }
 }
