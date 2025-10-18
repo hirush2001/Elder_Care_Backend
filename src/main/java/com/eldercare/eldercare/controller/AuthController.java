@@ -44,7 +44,7 @@ public class AuthController {
 
             Elder saved = elderRepository.save(elder);
             return ResponseEntity.ok(Map.of(
-                    "id", saved.getId(),
+                    "elderId", saved.getElderId(),
                     "email", saved.getEmail(),
                     "password", saved.getPassword(),
                     "role", saved.getRole()));
@@ -88,6 +88,70 @@ public class AuthController {
         } catch (Exception e) {
             e.printStackTrace(); // 🔹 important: show the real exception
             return ResponseEntity.internalServerError().body(Map.of("error", "Login failed"));
+        }
+    }
+
+    // GET Elder by ID
+    @GetMapping("/elder/{id}")
+    public ResponseEntity<?> getElderById(@PathVariable String id) {
+        try {
+            Optional<Elder> userOpt = elderRepository.findById(id);
+            if (userOpt.isEmpty()) {
+                return ResponseEntity.status(404).body(Map.of("error", "Elder not found"));
+            }
+            Elder user = userOpt.get();
+            return ResponseEntity.ok(Map.of(
+                    "elderId", user.getElderId(),
+                    "email", user.getEmail(),
+                    "role", user.getRole()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(Map.of("error", "Failed to fetch elder"));
+        }
+    }
+
+    // DELETE Elder by ID
+    @DeleteMapping("/elder/{id}")
+    public ResponseEntity<?> deleteElderById(@PathVariable String id) {
+        try {
+            Optional<Elder> userOpt = elderRepository.findById(id);
+            if (userOpt.isEmpty()) {
+                return ResponseEntity.status(404).body(Map.of("error", "Elder not found"));
+            }
+
+            elderRepository.deleteById(id); // ✅ simpler and safer
+            return ResponseEntity.ok(Map.of("message", "Elder deleted successfully"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(Map.of("error", "Failed to delete elder"));
+        }
+    }
+
+    // UPDATE Elder by ID
+    @PutMapping("/elder/{id}")
+    public ResponseEntity<?> updateElderById(@PathVariable String id, @RequestBody Elder updateData) {
+        try {
+            Optional<Elder> userOpt = elderRepository.findById(id);
+            if (userOpt.isEmpty()) {
+                return ResponseEntity.status(404).body(Map.of("error", "Elder not found"));
+            }
+
+            Elder user = userOpt.get();
+            if (updateData.getEmail() != null)
+                user.setEmail(updateData.getEmail());
+            if (updateData.getPassword() != null)
+                user.setPassword(passwordEncoder.encode(updateData.getPassword()));
+            if (updateData.getRole() != null)
+                user.setRole(updateData.getRole());
+
+            Elder saved = elderRepository.save(user);
+            return ResponseEntity.ok(Map.of(
+                    "elderId", saved.getElderId(),
+                    "email", saved.getEmail(),
+                    "role", saved.getRole()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(Map.of("error", "Failed to update elder"));
         }
     }
 

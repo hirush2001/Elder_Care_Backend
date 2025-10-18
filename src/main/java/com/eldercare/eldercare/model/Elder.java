@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Elder {
 
     @Id
-    private String id;
+    private String elderId;
     private String email;
     private String password;
     private String role;
@@ -17,15 +17,20 @@ public class Elder {
     }
 
     // Parameterized constructor
-    public Elder(String email, String password, String role) {
+    public Elder(String elderId, String email, String password, String role) {
+        this.elderId = elderId;
         this.email = email;
         this.password = password;
         this.role = role;
     }
 
     // Getters and setters
-    public String getId() {
-        return id;
+    public String getElderId() {
+        return elderId;
+    }
+
+    public void setElderId(String elderId) {
+        this.elderId = elderId;
     }
 
     public String getEmail() {

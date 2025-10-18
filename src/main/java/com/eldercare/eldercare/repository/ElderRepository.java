@@ -8,4 +8,6 @@ import java.util.Optional;
 @Repository
 public interface ElderRepository extends MongoRepository<Elder, String> {
     Optional<Elder> findByEmail(String email);
+
+    Optional<Elder> findById(String elderId);
 }
