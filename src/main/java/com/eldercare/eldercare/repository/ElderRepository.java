@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface ElderRepository extends MongoRepository<Elder, String> {
     Optional<Elder> findByEmail(String email);
 
-    Optional<Elder> findById(String elderId);
+    Optional<Elder> findByElderId(String elderId);
 }
