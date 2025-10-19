@@ -12,7 +12,9 @@ import java.util.Locale;
 public class MedicationSchedule {
 
     @Id
+    private String id;
 
+    private String medId;
     private String medicineName;
     private String dosage;
     private String time; // can be "HH:mm" OR full date string
@@ -20,7 +22,8 @@ public class MedicationSchedule {
     public MedicationSchedule() {
     }
 
-    public MedicationSchedule(String medicineName, String dosage, String time, String elderEmail) {
+    public MedicationSchedule(String medicineName, String dosage, String time) {
+
         this.medicineName = medicineName;
         this.dosage = dosage;
         this.time = time;
@@ -35,6 +38,13 @@ public class MedicationSchedule {
      */
 
     // Getters and setters
+    public String getMedId() {
+        return medId;
+    }
+
+    public void setMedId(String medId) {
+        this.medId = medId;
+    }
 
     public String getMedicineName() {
         return medicineName;

@@ -4,6 +4,8 @@ import com.eldercare.eldercare.model.MedicationSchedule;
 import com.eldercare.eldercare.service.MedicalService;
 import com.eldercare.eldercare.service.MedicationReminderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +30,10 @@ public class MedicationScheduleController {
     public String addMedicine(@PathVariable String elderId,
             @RequestBody MedicationSchedule medicationSchedule) {
 
+        String newMedId = medicalService.generatedMedicationId();
+
+        medicationSchedule.setMedId(newMedId);
+        // s
         // Save the medication schedule
         medicalService.addMedication(medicationSchedule);
 
@@ -44,23 +50,35 @@ public class MedicationScheduleController {
     }
 
     // ✅ Get a specific medication by ID
-    @GetMapping("/{id}")
-    public MedicationSchedule getMedicationById(@PathVariable String id) {
-        return medicalService.getMedicationById(id);
+    @GetMapping("/{medId}")
+    public ResponseEntity<?> getMedicationById(@PathVariable String medId) {
+        try {
+            MedicationSchedule med = medicalService.getMedicationById(medId);
+            return ResponseEntity.ok(med);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Medication not found with ID: " + medId);
+        }
     }
 
     // ✅ Update a medication schedule
-    @PutMapping("/{id}")
-    public MedicationSchedule updateMedication(@PathVariable String id,
+    @PutMapping("/{medId}")
+    public ResponseEntity<?> updateMedication(@PathVariable String medId,
             @RequestBody MedicationSchedule updatedMedication) {
-        return medicalService.updateMedication(id, updatedMedication);
+        try {
+            MedicationSchedule med = medicalService.updateMedication(medId, updatedMedication);
+            return ResponseEntity.ok("Medication updated successfully: " + med);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Medication not found with ID: " + medId);
+        }
     }
 
     // ✅ Delete a medication schedule
-    @DeleteMapping("/{id}")
-    public String deleteMedication(@PathVariable String id) {
-        medicalService.deleteMedication(id);
-        return "Medication with ID " + id + " has been deleted successfully.";
+    @DeleteMapping("/{medId}")
+    public String deleteMedication(@PathVariable String medId) {
+        medicalService.deleteMedication(medId);
+        return "Medication with ID " + medId + " has been deleted successfully.";
     }
 
     // ✅ Trigger reminder manually for a specific elder

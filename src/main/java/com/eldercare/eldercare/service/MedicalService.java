@@ -5,7 +5,9 @@ import com.eldercare.eldercare.repository.MedicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MedicalService {
@@ -25,23 +27,41 @@ public class MedicalService {
         return medicationRepository.findAll();
     }
 
-    public MedicationSchedule getMedicationById(String id) {
-        return medicationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Medication not found with ID: " + id));
+    public MedicationSchedule getMedicationById(String medId) {
+        return medicationRepository.findByMedId(medId)
+                .orElseThrow(() -> new RuntimeException("Medication not found with ID: " + medId));
     }
 
-    public MedicationSchedule updateMedication(String id, MedicationSchedule updatedMedication) {
-        return medicationRepository.findById(id)
+    public MedicationSchedule updateMedication(String medId, MedicationSchedule updatedMedication) {
+        return medicationRepository.findByMedId(
+                medId)
                 .map(med -> {
                     med.setMedicineName(updatedMedication.getMedicineName());
                     med.setDosage(updatedMedication.getDosage());
                     med.setTime(updatedMedication.getTime());
                     return medicationRepository.save(med);
                 })
-                .orElseThrow(() -> new RuntimeException("Medication not found with ID: " + id));
+                .orElseThrow(() -> new RuntimeException("Medication not found with ID: " + medId));
     }
 
-    public void deleteMedication(String id) {
-        medicationRepository.deleteById(id);
+    public void deleteMedication(String medId) {
+        medicationRepository.deleteByMedId(medId);
     }
+
+    public String generatedMedicationId() {
+        Optional<MedicationSchedule> last = medicationRepository.findAll()
+                .stream()
+                .filter(med -> med.getMedId() != null) // ignore null IDs
+                .max(Comparator.comparing(MedicationSchedule::getMedId));
+
+        if (last.isPresent()) {
+            String lastId = last.get().getMedId();
+            int num = Integer.parseInt(lastId.substring(1));
+            num++;
+            return String.format("M%03d", num);
+        } else {
+            return "M001"; // first ID if none exist
+        }
+    }
+
 }
