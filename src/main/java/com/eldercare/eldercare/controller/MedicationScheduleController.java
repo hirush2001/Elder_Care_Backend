@@ -76,9 +76,14 @@ public class MedicationScheduleController {
 
     // ✅ Delete a medication schedule
     @DeleteMapping("/{medId}")
-    public String deleteMedication(@PathVariable String medId) {
-        medicalService.deleteMedication(medId);
-        return "Medication with ID " + medId + " has been deleted successfully.";
+    public ResponseEntity<String> deleteMedication(@PathVariable String medId) {
+        try {
+            medicalService.deleteMedication(medId);
+            return ResponseEntity.ok("Medication with ID " + medId + " has been deleted successfully.");
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Medication not found with ID: " + medId);
+        }
     }
 
     // ✅ Trigger reminder manually for a specific elder

@@ -45,7 +45,10 @@ public class MedicalService {
     }
 
     public void deleteMedication(String medId) {
-        medicationRepository.deleteByMedId(medId);
+        MedicationSchedule med = medicationRepository.findByMedId(medId)
+                .orElseThrow(() -> new RuntimeException("Medication not found with ID: " + medId));
+
+        medicationRepository.delete(med);
     }
 
     public String generatedMedicationId() {
