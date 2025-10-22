@@ -3,6 +3,7 @@ package com.eldercare.eldercare.controller;
 import com.eldercare.eldercare.model.Elder;
 import com.eldercare.eldercare.repository.ElderRepository;
 import com.eldercare.eldercare.config.JwtUtil;
+import com.eldercare.eldercare.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +27,9 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody Elder elder) {
         try {
@@ -35,6 +39,7 @@ public class AuthController {
                         .badRequest()
                         .body(Map.of("error", "Email already in use"));
             }
+            elder.setElderId(userService.generateElderId());
 
             elder.setPassword(passwordEncoder.encode(elder.getPassword()));
             if (elder.getRole() == null || elder.getRole().isEmpty()) {

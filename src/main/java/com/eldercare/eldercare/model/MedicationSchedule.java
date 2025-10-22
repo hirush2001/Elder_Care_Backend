@@ -1,26 +1,39 @@
 package com.eldercare.eldercare.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-@Document(collection = "medications")
+@Entity
+
+@NoArgsConstructor
+@Data
+@Table(name = "medication_schedule")
 public class MedicationSchedule {
 
     @Id
+    @Column(name = "id")
     private String id;
-
+    @Column(name = "MedId")
     private String medId;
+    @Column(name = "Medicine_Name")
     private String medicineName;
+    @Column(name = "Dosage")
     private String dosage;
+    @Column(name = "Time")
     private String time; // can be "HH:mm" OR full date string
-
-    public MedicationSchedule() {
-    }
 
     public MedicationSchedule(String medicineName, String dosage, String time) {
 

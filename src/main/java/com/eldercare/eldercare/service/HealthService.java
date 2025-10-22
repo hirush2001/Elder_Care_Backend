@@ -6,6 +6,7 @@ import com.eldercare.eldercare.controller.DailyHealthREcordController;
 import com.eldercare.eldercare.model.DailyHealthRecord;
 import com.eldercare.eldercare.model.Elder;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 import java.util.Optional;
 
@@ -72,4 +73,48 @@ public class HealthService {
 
         return message.toString();
     }
+
+    public String generateHealthId() {
+        List<DailyHealthRecord> records = healthRecordRepository.findAll();
+
+        if (records.isEmpty()) {
+            return "H001";
+        }
+
+        DailyHealthRecord lastRecord = records.get(records.size() - 1);
+        String lastId = lastRecord.getHealthId();
+
+        int num = Integer.parseInt(lastId.substring(1)); // remove 'E'
+        num++;
+        return String.format("H%03d", num);
+
+    }
+
+    public DailyHealthRecord findById(String healthId) {
+        return healthRecordRepository.findById(healthId)
+                .orElseThrow(() -> new RuntimeException("Health record with ID " + healthId + " not found"));
+    }
+
+    public DailyHealthRecord updateHealthRecord(String healthId, DailyHealthRecord updatedRecord) {
+        DailyHealthRecord existingRecord = healthRecordRepository.findById(healthId)
+                .orElseThrow(() -> new RuntimeException("Health record with ID " + healthId + " not found"));
+
+        // Update fields
+        existingRecord.setPressure(updatedRecord.getPressure());
+        existingRecord.setSugar(updatedRecord.getSugar());
+        existingRecord.setPulse(updatedRecord.getPulse());
+        existingRecord.setTemp(updatedRecord.getTemp());
+
+        // Save updated record
+        return healthRecordRepository.save(existingRecord);
+    }
+
+    public boolean existsById(String healthId) {
+        return healthRecordRepository.existsById(healthId);
+    }
+
+    public void deleteById(String healthId) {
+        healthRecordRepository.deleteById(healthId);
+    }
+
 }
