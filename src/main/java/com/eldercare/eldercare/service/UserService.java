@@ -35,6 +35,10 @@ public class UserService {
         return repo.save(u);
     }
 
+    public Elder findById(String elderId) {
+        return repo.findById(elderId).orElse(null);
+    }
+
     public String generateElderId() {
         List<Elder> elders = repo.findAll();
 

@@ -19,7 +19,7 @@ public class CareTakerController {
         this.careTakerService = careTakerService;
     }
 
-    // ✅ POST - Add new caregiver
+    // POST - Add new caregiver
     @PostMapping("/add")
     public ResponseEntity<?> addCaretaker(@RequestBody CareGiver careGiver) {
         try {
@@ -33,7 +33,7 @@ public class CareTakerController {
         }
     }
 
-    // ✅ GET - Get all caregivers
+    // GET - Get all caregivers
     @GetMapping("/all")
     public ResponseEntity<?> getAllCaretakers() {
         try {
@@ -47,7 +47,7 @@ public class CareTakerController {
         }
     }
 
-    // ✅ GET - Get caregiver by ID
+    // GET - Get caregiver by ID
     @GetMapping("/{id}")
     public ResponseEntity<?> getCaretakerById(@PathVariable String id) {
         try {
@@ -60,7 +60,7 @@ public class CareTakerController {
         }
     }
 
-    // ✅ PUT - Update caregiver
+    // PUT - Update caregiver
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateCaretaker(@PathVariable String id, @RequestBody CareGiver updatedCareGiver) {
         try {
@@ -73,7 +73,7 @@ public class CareTakerController {
         }
     }
 
-    // ✅ DELETE - Delete caregiver
+    // DELETE - Delete caregiver
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteCaretaker(@PathVariable String id) {
         try {

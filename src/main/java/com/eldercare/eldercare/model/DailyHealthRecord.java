@@ -1,5 +1,6 @@
 package com.eldercare.eldercare.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
@@ -28,7 +29,7 @@ public class DailyHealthRecord {
 
     @ManyToOne
     @JoinColumn(name = "elder_Id", referencedColumnName = "elder_id")
-    @JsonIgnore
+    @JsonBackReference
     private Elder elder; // assuming your Elder class is named Elder
 
     public DailyHealthRecord(String healthId, float bloodPressure, float sugarLevel, float pulseRate,

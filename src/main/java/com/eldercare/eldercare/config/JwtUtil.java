@@ -20,9 +20,10 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(String email, String role) {
+    public String generateToken(String email, String role, String elderId) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", role);
+        claims.put("elderId", elderId);
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -68,4 +69,18 @@ public class JwtUtil {
             return null;
         }
     }
+
+    public String extractElderId(String token) {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .get("elderId", String.class); // read the elderId claim
+        } catch (JwtException e) {
+            return null;
+        }
+    }
+
 }
