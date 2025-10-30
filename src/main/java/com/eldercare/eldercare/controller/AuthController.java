@@ -64,11 +64,12 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody Elder loginData) {
         try {
             System.out.println("Login attempt for: " + loginData.getEmail());
+
             Optional<Elder> userOpt = elderRepository.findByEmail(loginData.getEmail());
 
             if (userOpt.isEmpty()) {
                 System.out.println("No user found");
-                return ResponseEntity.status(401).body(Map.of("error", "Invalid credentials"));
+                return ResponseEntity.status(401).body(Map.of("error", "Invalid email or password"));
             }
 
             Elder user = userOpt.get();
@@ -76,10 +77,18 @@ public class AuthController {
             boolean matches = passwordEncoder.matches(loginData.getPassword(), user.getPassword());
             System.out.println("Password match: " + matches);
 
+            // 🔹 Check password validity
             if (!matches) {
-                return ResponseEntity.status(401).body(Map.of("error", "Invalid credentials"));
+                return ResponseEntity.status(401).body(Map.of("error", "Invalid email or password"));
             }
 
+            // 🔹 Check role validity
+            if (loginData.getRole() == null || !loginData.getRole().equalsIgnoreCase(user.getRole())) {
+                System.out.println("Role mismatch: expected " + user.getRole() + " but got " + loginData.getRole());
+                return ResponseEntity.status(403).body(Map.of("error", "Invalid role for this account"));
+            }
+
+            // 🔹 Generate JWT token
             String token = jwtUtil.generateToken(user.getEmail(), user.getRole(), user.getElderId());
             System.out.println("Token generated successfully: " + token);
 
@@ -87,11 +96,11 @@ public class AuthController {
                     "token", token,
                     "user", Map.of(
                             "email", user.getEmail(),
-                            "password", user.getPassword(),
-                            "role", user.getRole())));
+                            "role", user.getRole(),
+                            "elderId", user.getElderId())));
 
         } catch (Exception e) {
-            e.printStackTrace(); // 🔹 important: show the real exception
+            e.printStackTrace();
             return ResponseEntity.internalServerError().body(Map.of("error", "Login failed"));
         }
     }
