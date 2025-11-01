@@ -1,6 +1,8 @@
 package com.eldercare.eldercare.service;
 
+import com.eldercare.eldercare.model.Elder;
 import com.eldercare.eldercare.model.MedicationSchedule;
+import com.eldercare.eldercare.repository.ElderRepository;
 import com.eldercare.eldercare.repository.MedicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,10 +15,13 @@ import java.util.Optional;
 public class MedicalService {
 
     private final MedicationRepository medicationRepository;
+    private final ElderRepository elderRepository;
 
     @Autowired
-    public MedicalService(MedicationRepository medicationRepository) {
+    public MedicalService(MedicationRepository medicationRepository,
+            ElderRepository elderRepository) {
         this.medicationRepository = medicationRepository;
+        this.elderRepository = elderRepository;
     }
 
     public MedicationSchedule addMedication(MedicationSchedule medication) {
@@ -65,6 +70,11 @@ public class MedicalService {
         } else {
             return "M001"; // first ID if none exist
         }
+    }
+
+    public Elder findElderById(String elderId) {
+        return elderRepository.findById(elderId)
+                .orElseThrow(() -> new RuntimeException("Elder not found with ID: " + elderId));
     }
 
 }

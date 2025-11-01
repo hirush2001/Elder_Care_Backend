@@ -16,6 +16,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 
 @NoArgsConstructor
@@ -24,9 +26,7 @@ import java.util.Locale;
 public class MedicationSchedule {
 
     @Id
-    @Column(name = "id")
-    private String id;
-    @Column(name = "MedId")
+    @Column(name = "MedId", nullable = false, unique = true)
     private String medId;
     @Column(name = "Medicine_Name")
     private String medicineName;
@@ -35,8 +35,13 @@ public class MedicationSchedule {
     @Column(name = "Time")
     private String time; // can be "HH:mm" OR full date string
 
-    public MedicationSchedule(String medicineName, String dosage, String time) {
+    @ManyToOne
+    @JoinColumn(name = "elder_Id", referencedColumnName = "elder_id")
+    @JsonBackReference
+    private Elder elder;
 
+    public MedicationSchedule(String medId, String medicineName, String dosage, String time) {
+        this.medId = medId;
         this.medicineName = medicineName;
         this.dosage = dosage;
         this.time = time;

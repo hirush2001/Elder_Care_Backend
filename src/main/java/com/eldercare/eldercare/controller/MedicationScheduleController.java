@@ -1,8 +1,13 @@
 package com.eldercare.eldercare.controller;
 
+import com.eldercare.eldercare.config.JwtUtil;
+import com.eldercare.eldercare.model.Elder;
 import com.eldercare.eldercare.model.MedicationSchedule;
 import com.eldercare.eldercare.service.MedicalService;
 import com.eldercare.eldercare.service.MedicationReminderService;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,27 +22,47 @@ public class MedicationScheduleController {
 
     private final MedicalService medicalService;
     private final MedicationReminderService reminderService;
+    private final JwtUtil jwtUtil;
 
     @Autowired
     public MedicationScheduleController(MedicalService medicalService,
-            MedicationReminderService reminderService) {
+            MedicationReminderService reminderService, JwtUtil jwtUtil) {
         this.medicalService = medicalService;
         this.reminderService = reminderService;
+        this.jwtUtil = jwtUtil;
     }
 
     // ✅ Add a new medicine schedule for a specific elder
-    @PostMapping("/addmedicine/{elderId}")
-    public String addMedicine(@PathVariable String elderId,
-            @RequestBody MedicationSchedule medicationSchedule) {
+    @PostMapping("/addmedicine")
+    public String addMedicine(@RequestBody MedicationSchedule medicationSchedule,
+            HttpServletRequest request) {
 
+        // Extract JWT token from Authorization header
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Missing or invalid Authorization header");
+        }
+
+        String token = authHeader.substring(7);
+
+        // Extract elderId from token
+        String elderId = jwtUtil.extractElderId(token);
+        if (elderId == null) {
+            throw new RuntimeException("Invalid token: elderId not found");
+        }
+
+        // Assign medication ID
         String newMedId = medicalService.generatedMedicationId();
-
         medicationSchedule.setMedId(newMedId);
-        // s
-        // Save the medication schedule
+
+        // Lookup Elder by elderId (so you can set the relationship)
+        Elder elder = medicalService.findElderById(elderId); // implement this in service if not present
+        medicationSchedule.setElder(elder);
+
+        // Save medication
         medicalService.addMedication(medicationSchedule);
 
-        // Schedule automatic reminder for this elder
+        // Schedule automatic reminder
         reminderService.scheduleReminder(medicationSchedule, elderId);
 
         return "Medication schedule added and reminder scheduled for elder ID: " + elderId;
