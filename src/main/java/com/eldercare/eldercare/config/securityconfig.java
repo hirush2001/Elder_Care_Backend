@@ -11,6 +11,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -22,10 +26,37 @@ public class securityconfig {
     public securityconfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
+    /*
+     * @Bean
+     * public SecurityFilterChain securityFilterChain(HttpSecurity http) throws
+     * Exception {
+     * http
+     * .csrf(csrf -> csrf.disable())
+     * .authorizeHttpRequests(auth -> auth
+     * .requestMatchers("/api/auth/signup", "/api/auth/login",
+     * "/medical/addmedicine",
+     * "/api/auth/elder/*", "/medical/**", "/caretaker/**")
+     * .permitAll()
+     * .anyRequest().authenticated())
+     * .addFilterBefore(jwtAuthenticationFilter,
+     * UsernamePasswordAuthenticationFilter.class);
+     * 
+     * return http.build();
+     * }
+     * 
+     */
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> cors.configurationSource(request -> {
+                    CorsConfiguration config = new CorsConfiguration();
+                    config.setAllowCredentials(true);
+                    config.setAllowedOrigins(List.of("http://localhost:5173")); // frontend origin
+                    config.setAllowedHeaders(List.of("*"));
+                    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    return config;
+                }))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/signup", "/api/auth/login", "/medical/addmedicine",
