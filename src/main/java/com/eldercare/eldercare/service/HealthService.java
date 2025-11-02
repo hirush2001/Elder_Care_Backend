@@ -117,4 +117,8 @@ public class HealthService {
         healthRecordRepository.deleteById(healthId);
     }
 
+    public List<DailyHealthRecord> findAllByElderId(String elderId) {
+        return healthRecordRepository.findAllByElder_ElderId(elderId);
+    }
+
 }
