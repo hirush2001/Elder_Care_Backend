@@ -13,7 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/medical")
@@ -117,4 +119,25 @@ public class MedicationScheduleController {
         reminderService.sendReminderToSpecificElder(elderId);
         return "Reminder email sent successfully for elder ID: " + elderId;
     }
+
+    @GetMapping("/getmed")
+    public Map<String, Object> getAllMedications(HttpServletRequest request) {
+        Map<String, Object> response = new HashMap<>();
+
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Access denied: Only Elders can access health records");
+        }
+
+        String token = authHeader.substring(7);
+        String elderId = jwtUtil.extractElderId(token);
+
+        List<MedicationSchedule> records = medicalService.findAllByElderId(elderId);
+
+        response.put("records", records);
+        response.put("count", records.size());
+
+        return response;
+    }
+
 }

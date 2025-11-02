@@ -1,5 +1,7 @@
 package com.eldercare.eldercare.service;
 
+import com.eldercare.eldercare.controller.MedicationScheduleController;
+import com.eldercare.eldercare.model.DailyHealthRecord;
 import com.eldercare.eldercare.model.Elder;
 import com.eldercare.eldercare.model.MedicationSchedule;
 import com.eldercare.eldercare.repository.ElderRepository;
@@ -75,6 +77,10 @@ public class MedicalService {
     public Elder findElderById(String elderId) {
         return elderRepository.findById(elderId)
                 .orElseThrow(() -> new RuntimeException("Elder not found with ID: " + elderId));
+    }
+
+    public List<MedicationSchedule> findAllByElderId(String elderId) {
+        return medicationRepository.findAllByElder_ElderId(elderId);
     }
 
 }
