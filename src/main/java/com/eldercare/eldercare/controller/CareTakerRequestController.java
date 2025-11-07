@@ -66,6 +66,12 @@ public class CareTakerRequestController {
             careRequest.setElder(elder);
             careRequest.setCareGiver(careGiver);
 
+            if (careRequest.getRequestDate() == null || careRequest.getRequestDate().isEmpty()) {
+                String today = java.time.LocalDate.now().toString();
+                careRequest.setRequestDate(today);
+            }
+
+            careRequest.setStatus("Pending");
             // 6. Save to database
             CareRequest saved = careRequestService.saveRequest(careRequest);
 
