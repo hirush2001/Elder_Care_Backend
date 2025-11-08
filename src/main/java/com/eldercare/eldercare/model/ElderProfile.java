@@ -10,6 +10,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @NoArgsConstructor
@@ -55,6 +56,7 @@ public class ElderProfile {
     // Getters and Setters
     @ManyToOne
     @JoinColumn(name = "elder_Id", referencedColumnName = "elder_id")
+    @ToString.Exclude
     @JsonBackReference
     private Elder elder;
 

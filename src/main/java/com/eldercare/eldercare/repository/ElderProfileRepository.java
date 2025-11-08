@@ -15,4 +15,6 @@ public interface ElderProfileRepository extends JpaRepository<ElderProfile, Stri
 
     List<ElderProfile> findAllByElder_ElderId(String elderId);
 
+    Optional<ElderProfile> findByElder_ElderId(String elderId);
+
 }

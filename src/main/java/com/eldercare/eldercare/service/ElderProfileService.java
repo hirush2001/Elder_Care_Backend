@@ -30,6 +30,36 @@ public class ElderProfileService {
                 .orElseThrow(() -> new RuntimeException("Elder not found with ID: " + elderId));
     }
 
+    public ElderProfile findProfileByElderId(String elderId) {
+        return elderProfileRepository.findByElder_ElderId(elderId)
+                .orElse(null); // or throw exception
+    }
+
+    public ElderProfile getProfileById(String RegId) {
+        return elderProfileRepository.findById(RegId)
+                .orElseThrow(() -> new RuntimeException("Profile not found with ID: " + RegId));
+    }
+
+    public ElderProfile updateElderProfile(String regId, ElderProfile updatedProfile) {
+        return elderProfileRepository.findById(regId)
+                .map(profile -> {
+                    profile.setFullName(updatedProfile.getFullName());
+                    profile.setAge(updatedProfile.getAge());
+                    profile.setGender(updatedProfile.getGender());
+                    profile.setEmail(updatedProfile.getEmail());
+                    profile.setPhone(updatedProfile.getPhone());
+                    profile.setAddress(updatedProfile.getAddress());
+
+                    profile.setGuardianFullName(updatedProfile.getGuardianFullName());
+                    profile.setGuardianRelationship(updatedProfile.getGuardianRelationship());
+                    profile.setGuardianEmail(updatedProfile.getGuardianEmail());
+                    profile.setGuardianPhone(updatedProfile.getGuardianPhone());
+
+                    return elderProfileRepository.save(profile);
+                })
+                .orElseThrow(() -> new RuntimeException("Elder profile not found with ID: " + regId));
+    }
+
     public String generatedRegistrationId() {
         Optional<ElderProfile> last = elderProfileRepository.findAll()
                 .stream()
