@@ -35,9 +35,15 @@ public class ElderProfileService {
                 .orElse(null); // or throw exception
     }
 
-    public ElderProfile getProfileById(String RegId) {
-        return elderProfileRepository.findById(RegId)
-                .orElseThrow(() -> new RuntimeException("Profile not found with ID: " + RegId));
+    public ElderProfile getProfileById(String elderId) {
+        return elderProfileRepository.findById(
+                elderId)
+                .orElseThrow(() -> new RuntimeException("Profile not found with ID: " + elderId));
+    }
+
+    public ElderProfile getProfileByElderId(String elderId) {
+        return elderProfileRepository.findByElder_ElderId(elderId)
+                .orElseThrow(() -> new RuntimeException("Profile not found for elder ID: " + elderId));
     }
 
     public ElderProfile updateElderProfile(String regId, ElderProfile updatedProfile) {

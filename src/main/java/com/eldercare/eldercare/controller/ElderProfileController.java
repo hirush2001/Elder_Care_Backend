@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/profile")
@@ -61,14 +62,26 @@ public class ElderProfileController {
         return "Profile added successfully for elder ID: " + elderId;
     }
 
-    @GetMapping("/{RegId}")
-    public ResponseEntity<?> getProfileById(@PathVariable String RegId) {
+    @GetMapping("/guardian")
+    public ResponseEntity<?> getProfileForGuardian(HttpServletRequest request) {
         try {
-            ElderProfile reg = elderProfileService.getProfileById(RegId);
-            return ResponseEntity.ok(reg);
-        } catch (RuntimeException ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Profile not found with ID:" + RegId);
+            String authHeader = request.getHeader("Authorization");
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing or Invalid token");
+            }
+            String token = authHeader.substring(7);
+            String elderId = jwtUtil.extractElderId(token);
+
+            if (elderId == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Elder ID not found in token");
+
+            }
+
+            ElderProfile elderProfile = elderProfileService.getProfileByElderId(elderId);
+            return ResponseEntity.ok(elderProfile);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error fetching guardian's elder profile:" + e.getMessage());
         }
     }
 
