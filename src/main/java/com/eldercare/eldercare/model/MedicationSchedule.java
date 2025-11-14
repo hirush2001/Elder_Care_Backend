@@ -1,17 +1,12 @@
 package com.eldercare.eldercare.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Column;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -19,7 +14,7 @@ import java.util.Locale;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
-
+@AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Table(name = "medication_schedule")
@@ -34,58 +29,18 @@ public class MedicationSchedule {
     private String dosage;
     @Column(name = "Time")
     private String time; // can be "HH:mm" OR full date string
+    @Column(name = "Start_Date")
+    private LocalDate startDate;
+    @Column(name = "End_Date")
+    private LocalDate endDate;
 
     @ManyToOne
-    @JoinColumn(name = "elder_Id", referencedColumnName = "elder_id")
+    @JoinColumn(name = "Elder_Id", referencedColumnName = "Elder_id")
     @JsonBackReference
     private Elder elder;
+    @ManyToOne
+    @JoinColumn(name = "Prescription_id")
+    private Prescription prescription;
+    
 
-    public MedicationSchedule(String medId, String medicineName, String dosage, String time) {
-        this.medId = medId;
-        this.medicineName = medicineName;
-        this.dosage = dosage;
-        this.time = time;
-
-    }
-
-    /**
-     * Convert any stored time string to LocalTime.
-     * Supports:
-     * 1) "HH:mm" -> 11:45
-     * 2) "EEE MMM dd HH:mm:ss z yyyy" -> Thu Oct 16 11:45:00 IST 2025
-     */
-
-    // Getters and setters
-    public String getMedId() {
-        return medId;
-    }
-
-    public void setMedId(String medId) {
-        this.medId = medId;
-    }
-
-    public String getMedicineName() {
-        return medicineName;
-    }
-
-    public void setMedicineName(String medicineName) {
-        this.medicineName = medicineName;
-    }
-
-    public String getDosage() {
-        return dosage;
-    }
-
-    public void setDosage(String dosage) {
-        this.dosage = dosage;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-}
+ }
