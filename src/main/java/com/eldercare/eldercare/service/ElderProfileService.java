@@ -61,6 +61,8 @@ public class ElderProfileService {
                     profile.setGuardianEmail(updatedProfile.getGuardianEmail());
                     profile.setGuardianPhone(updatedProfile.getGuardianPhone());
 
+                    profile.setProfilePicture(updatedProfile.getProfilePicture());
+
                     return elderProfileRepository.save(profile);
                 })
                 .orElseThrow(() -> new RuntimeException("Elder profile not found with ID: " + regId));

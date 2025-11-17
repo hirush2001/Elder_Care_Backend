@@ -40,6 +40,9 @@ public class ElderProfile {
     @Column(name = "Address")
     private String address;
 
+    @Column(name = "Profile_Picture")
+    private String profilePicture;
+
     // Guardian Details
     @Column(name = "Guardian_Fullname")
     private String guardianFullName;
@@ -114,6 +117,14 @@ public class ElderProfile {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 
     public String getGuardianFullName() {
