@@ -26,9 +26,10 @@ public class Appointment {
     
     // 🔹 Many appointments can be assigned to one doctor
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Doc_id", referencedColumnName = "Doc_id")
+    @JoinColumn(name = "Doctor_id", referencedColumnName = "Doctor_id")
     @JsonIgnore
-    private CareGiver careGiver;
+    
+    private Doctor doctor;
 
     @Column(name = "Date_and_Time", nullable = false)
     private LocalDateTime appointmentDateTime;
@@ -43,7 +44,7 @@ public class Appointment {
      public enum Status {
       SCHEDULED,
       COMPLETED,
-    CANCELLED
+       CANCELLED
    }
 
 

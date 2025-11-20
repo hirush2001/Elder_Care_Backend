@@ -12,11 +12,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Table(name = "Doctotr")
+@Table(name = "Doctor")
 public class Doctor {
         @Id
-    @Column(name = "Doc_id", nullable = false, unique = true)
-    private String regId;
+    @Column(name = "Doctor_id", nullable = false, unique = true)
+    private String doctorId;
 
     @Column(name = "Name")
     private String name;

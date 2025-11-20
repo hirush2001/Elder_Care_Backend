@@ -3,8 +3,11 @@ package com.eldercare.eldercare.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Id;
+import jakarta.persistence.CascadeType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -39,10 +42,14 @@ public class Prescription {
     
     // 🔹 Many Prescriptions can be done one doctor
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Doc_id", referencedColumnName = "Doc_id")
+    @JoinColumn(name = "Doctor_id", referencedColumnName = "Doctor_id")
     @JsonIgnore
-    private CareGiver careGiver;
 
+    private Doctor doctor;
+     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "prescription_id")
+    private List<MedicationSchedule> medicationSchedule;
+    
     @Column(name = "Date_and_Time", nullable = false)
     private LocalDateTime PrescriptionDateTime;
 
