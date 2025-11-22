@@ -65,7 +65,8 @@ public class CareTakerRequestController {
 
             careRequest.setRequestId(newCareReqId);
             careRequest.setElder(elder); // Elder sending the request
-            careRequest.setCareGiver(careGiver); // Caregiver from URI
+            // careRequest.setCareGiver(careGiver); // Caregiver from URI
+            careRequest.setCId(careTakerId);
 
             if (careRequest.getRequestDate() == null || careRequest.getRequestDate().isEmpty()) {
                 careRequest.setRequestDate(java.time.LocalDate.now().toString());

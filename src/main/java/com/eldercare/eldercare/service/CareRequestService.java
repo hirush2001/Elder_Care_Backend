@@ -64,7 +64,7 @@ public class CareRequestService {
     public CareRequest updateRequest(String id, CareRequest updatedRequest) {
         return careRequestRepository.findById(id).map(existing -> {
             existing.setElder(updatedRequest.getElder());
-            existing.setCareGiver(updatedRequest.getCareGiver());
+            // existing.setCareGiver(updatedRequest.getCareGiver());
             existing.setRequestDate(updatedRequest.getRequestDate());
             existing.setStatus(updatedRequest.getStatus());
             // Add any other fields you want to update
