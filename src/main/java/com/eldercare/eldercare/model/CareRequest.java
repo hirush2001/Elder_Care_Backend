@@ -35,9 +35,9 @@ public class CareRequest {
 
     // 🔹 Many care requests can be assigned to one CareGiver
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Care_Taker_Id", referencedColumnName = "Care_Taker_Id")
+    @JoinColumn(name = "Care_Taker_Id", referencedColumnName = "Elder_Id")
     @JsonIgnore
-    private CareGiver careGiver;
+    private Elder careGiver;
 
     public CareRequest(String requestId, String requestDate, String status) {
         this.requestId = requestId;

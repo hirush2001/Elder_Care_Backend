@@ -23,6 +23,10 @@ public class Elder {
     private String password;
     @Column(name = "Role")
     private String role;
+    @Column(name = "contact_number")
+    private String contactNumber;
+    @Column(name = "full_name")
+    private String fullName;
 
     @OneToMany(mappedBy = "elder", cascade = CascadeType.ALL)
     @JsonManagedReference

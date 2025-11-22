@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -52,7 +53,9 @@ public class AuthController {
                     "elderId", saved.getElderId(),
                     "email", saved.getEmail(),
                     "password", saved.getPassword(),
-                    "role", saved.getRole()));
+                    "role", saved.getRole(),
+                    "contactNumber", saved.getContactNumber(),
+                    "fullName", saved.getFullName()));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -166,6 +169,22 @@ public class AuthController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(Map.of("error", "Failed to update elder"));
+        }
+    }
+
+    @GetMapping("/elder")
+    public ResponseEntity<?> getAllElders() {
+        try {
+            List<Elder> elders = elderRepository.findAll();
+
+            if (elders.isEmpty()) {
+                return ResponseEntity.status(404).body(Map.of("error", "No elders found"));
+            }
+
+            return ResponseEntity.ok(elders);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(Map.of("error", "Failed to fetch elders"));
         }
     }
 

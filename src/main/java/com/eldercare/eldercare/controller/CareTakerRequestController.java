@@ -44,38 +44,39 @@ public class CareTakerRequestController {
             @PathVariable("care_taker_id") String careTakerId) {
 
         try {
-            // 1. Extract JWT token (Bearer token)
             String token = authHeader.substring(7);
 
-            // 2. Extract Elder ID from token
+            // Elder who is sending request
             String elderId = jwtUtil.extractElderId(token);
-
-            // 3. Fetch Elder and CareGiver
             Elder elder = userService.findById(elderId);
-            CareGiver careGiver = careRequestService.findCareGiverById(careTakerId);
 
-            if (careGiver == null) {
-                return ResponseEntity.badRequest().body("Invalid Care Taker ID: " + careTakerId);
+            if (!elder.getRole().equalsIgnoreCase("elder")) {
+                return ResponseEntity.badRequest().body("Invalid elder token.");
             }
 
-            // 4. Generate new Request ID
+            // Caregiver ID coming from URI
+            Elder careGiver = userService.findById(careTakerId);
+
+            if (careGiver == null || !careGiver.getRole().equals("caregiver")) {
+                return ResponseEntity.badRequest().body("Invalid caregiver ID.");
+            }
+
             String newCareReqId = careRequestService.generateCareReqId();
 
-            // 5. Set all required fields
             careRequest.setRequestId(newCareReqId);
-            careRequest.setElder(elder);
-            careRequest.setCareGiver(careGiver);
+            careRequest.setElder(elder); // Elder sending the request
+            careRequest.setCareGiver(careGiver); // Caregiver from URI
 
             if (careRequest.getRequestDate() == null || careRequest.getRequestDate().isEmpty()) {
-                String today = java.time.LocalDate.now().toString();
-                careRequest.setRequestDate(today);
+                careRequest.setRequestDate(java.time.LocalDate.now().toString());
             }
 
             careRequest.setStatus("Pending");
-            // 6. Save to database
+
             CareRequest saved = careRequestService.saveRequest(careRequest);
 
             return ResponseEntity.ok("Successfully added Care Request with ID: " + saved.getRequestId());
+
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error adding Request: " + e.getMessage());
         }

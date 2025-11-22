@@ -6,7 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "caregiver")
+// @Table(name = "caregiver")
 public class CareGiver {
 
     @Id
@@ -32,6 +32,7 @@ public class CareGiver {
         this.fullname = fullname;
         this.email = email;
         this.contactNumber = contactNumber;
+
     }
 
     // ✅ Getters and Setters
@@ -66,4 +67,5 @@ public class CareGiver {
     public void setContactNumber(String contactNumber) {
         this.contactNumber = contactNumber;
     }
+
 }
