@@ -26,6 +26,8 @@ public class CareRequest {
     private String requestDate;
     @Column(name = "Status")
     private String status;
+    @Column(name = "Care_Id")
+    private String careId;
 
     // 🔹 Many care requests belong to one Elder
     @ManyToOne(fetch = FetchType.LAZY)
@@ -39,11 +41,11 @@ public class CareRequest {
     @JsonIgnore
     private Elder careGiver;
 
-    public CareRequest(String requestId, String requestDate, String status) {
+    public CareRequest(String requestId, String requestDate, String status, String careId) {
         this.requestId = requestId;
         this.requestDate = requestDate;
         this.status = status;
-
+        this.careId = careId;
     }
 
     public String getRequestId() {
@@ -68,6 +70,14 @@ public class CareRequest {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getCId() {
+        return careId;
+    }
+
+    public void setCId(String careId) {
+        this.careId = careId;
     }
 
 }
