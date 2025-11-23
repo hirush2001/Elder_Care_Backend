@@ -37,11 +37,11 @@ public class CareTakerRequestController {
 
     }
 
-    @PostMapping("/request/{care_taker_id}")
+    @PostMapping("/request/{req_id}")
     public ResponseEntity<?> addCareReq(
             @RequestBody CareRequest careRequest,
             @RequestHeader("Authorization") String authHeader,
-            @PathVariable("care_taker_id") String careTakerId) {
+            @PathVariable("req_id") String req_id) {
 
         try {
             String token = authHeader.substring(7);
@@ -55,7 +55,7 @@ public class CareTakerRequestController {
             }
 
             // Caregiver ID coming from URI
-            Elder careGiver = userService.findById(careTakerId);
+            Elder careGiver = userService.findById(req_id);
 
             if (careGiver == null || !careGiver.getRole().equals("caregiver")) {
                 return ResponseEntity.badRequest().body("Invalid caregiver ID.");
@@ -66,7 +66,7 @@ public class CareTakerRequestController {
             careRequest.setRequestId(newCareReqId);
             careRequest.setElder(elder); // Elder sending the request
             // careRequest.setCareGiver(careGiver); // Caregiver from URI
-            careRequest.setCId(careTakerId);
+            careRequest.setCId(req_id);
 
             if (careRequest.getRequestDate() == null || careRequest.getRequestDate().isEmpty()) {
                 careRequest.setRequestDate(java.time.LocalDate.now().toString());
@@ -135,6 +135,24 @@ public class CareTakerRequestController {
             return ResponseEntity.status(404).body("⚠️ " + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(" Error updating request: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/my-requests")
+    public ResponseEntity<?> getCaregiverRequests(
+            @RequestHeader("Authorization") String authHeader) {
+        try {
+            String token = authHeader.substring(7);
+            // Get caregiver elder_id from token
+            String caregiverId = jwtUtil.extractElderId(token);
+
+            // Fetch requests where care_id = caregiverId
+            List<CareRequest> list = careRequestService.getRequestsForCaregiver(caregiverId);
+
+            return ResponseEntity.ok(list);
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to load requests: " + e.getMessage());
         }
     }
 

@@ -72,4 +72,8 @@ public class CareRequestService {
         }).orElseThrow(() -> new RuntimeException("Care request not found with ID: " + id));
     }
 
+    public List<CareRequest> getRequestsForCaregiver(String caregiverId) {
+        return careRequestRepository.findByCareIdAndFetchElder(caregiverId);
+    }
+
 }
