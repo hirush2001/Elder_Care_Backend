@@ -2,6 +2,7 @@ package com.eldercare.eldercare.service;
 
 import java.util.Comparator;
 import java.util.Optional;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -83,4 +84,9 @@ public class ElderProfileService {
             return "P001"; // first ID if none exist
         }
     }
+
+    public Optional<ElderProfile> getGuardianProfileByTokenElderId(String elderId) {
+        return elderProfileRepository.findByElder_ElderId(elderId);
+    }
+
 }

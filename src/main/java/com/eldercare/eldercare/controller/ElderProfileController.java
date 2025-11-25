@@ -22,7 +22,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/profile")
@@ -82,6 +85,23 @@ public class ElderProfileController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error fetching guardian's elder profile:" + e.getMessage());
+        }
+    }
+
+    @GetMapping("/guardian/profile")
+    public ResponseEntity<?> getGurdianProfile(@RequestHeader("Authorization") String authHeader) {
+        try {
+            String token = authHeader.replace("Bearer ", "");
+
+            String elderId = jwtUtil.extractElderId(token);
+
+            Optional<ElderProfile> elderProfile = elderProfileService.getGuardianProfileByTokenElderId(elderId);
+            return elderProfile
+                    .<ResponseEntity<?>>map(ResponseEntity::ok)
+                    .orElseGet(() -> ResponseEntity.status(404)
+                            .body("Profile not found with ID: " + elderId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error fetching Profile: " + e.getMessage());
         }
     }
 

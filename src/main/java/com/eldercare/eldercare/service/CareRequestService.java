@@ -49,8 +49,8 @@ public class CareRequestService {
     }
 
     // ✅ Get single request
-    public Optional<CareRequest> getRequestIdById(String care_taker_id) {
-        return careRequestRepository.findById(care_taker_id);
+    public Optional<CareRequest> getRequestIdById(String requestId) {
+        return careRequestRepository.findById(requestId);
     }
 
     // ✅ Delete care request

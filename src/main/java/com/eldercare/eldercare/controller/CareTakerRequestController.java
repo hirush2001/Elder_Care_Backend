@@ -156,4 +156,36 @@ public class CareTakerRequestController {
         }
     }
 
+    // Accept a care request
+    @PutMapping("/elder/accept/{requestId}")
+    public ResponseEntity<?> acceptCareRequest(@PathVariable String requestId) {
+        try {
+            CareRequest request = careRequestService.getRequestIdById(requestId)
+                    .orElseThrow(() -> new RuntimeException("Request not found with ID: " + requestId));
+
+            request.setStatus("Accepted");
+            careRequestService.saveRequest(request);
+
+            return ResponseEntity.ok("Request accepted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to accept request: " + e.getMessage());
+        }
+    }
+
+    // Reject a care request
+    @PutMapping("/elder/reject/{requestId}")
+    public ResponseEntity<?> rejectCareRequest(@PathVariable String requestId) {
+        try {
+            CareRequest request = careRequestService.getRequestIdById(requestId)
+                    .orElseThrow(() -> new RuntimeException("Request not found with ID: " + requestId));
+
+            request.setStatus("Rejected");
+            careRequestService.saveRequest(request);
+
+            return ResponseEntity.ok("Request rejected successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to reject request: " + e.getMessage());
+        }
+    }
+
 }

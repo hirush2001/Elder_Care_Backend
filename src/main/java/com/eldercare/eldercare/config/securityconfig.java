@@ -41,7 +41,7 @@ public class securityconfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/signup", "/api/auth/login", "/medical/addmedicine",
-                                "/api/auth/elder/*", "/medical/**", "/caretaker/**", "/api/auth/elder")
+                                "/api/auth/elder/*", "/medical/**", "/caretaker/**", "/api/auth/elder", "/profile/**")
                         .permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

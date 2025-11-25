@@ -32,7 +32,7 @@ public class CareRequest {
     // 🔹 Many care requests belong to one Elder
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "Elder_Id", referencedColumnName = "Elder_Id")
-    @JsonIgnore
+
     private Elder elder;
 
     public CareRequest(String requestId, String requestDate, String status, String careId) {
