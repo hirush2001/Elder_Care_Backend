@@ -28,9 +28,21 @@ public class Elder {
     @Column(name = "full_name")
     private String fullName;
 
-    @OneToMany(mappedBy = "elder", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "elder", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<DailyHealthRecord> healthRecords;
+
+    @OneToOne(mappedBy = "elder", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private ElderProfile elderProfile;
+
+    @OneToMany(mappedBy = "elder", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<MedicationSchedule> medicationSchedules;
+
+    @OneToMany(mappedBy = "elder", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<CareRequest> careRequests;
 
     // Parameterized constructor
     public Elder(String elderId, String email, String password, String role) {
