@@ -1,6 +1,9 @@
 package com.eldercare.eldercare.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,7 +33,9 @@ public class CareRequest {
     private String careId;
 
     // 🔹 Many care requests belong to one Elder
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnoreProperties({ "careRequests" })
+
     @JoinColumn(name = "Elder_Id", referencedColumnName = "Elder_Id")
 
     private Elder elder;

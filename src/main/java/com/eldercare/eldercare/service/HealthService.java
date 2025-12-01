@@ -44,27 +44,39 @@ public class HealthService {
         if (record.getPressure() > 140) {
             message.append("⚠️ High blood pressure detected!\n");
             hasWarning = true;
+        } else if (record.getPressure() < 90) {
+            message.append("⚠️ Low blood pressure detected!\n");
+            hasWarning = true;
         }
 
         if (record.getSugar() > 120) {
             message.append("⚠️ High blood sugar level detected!\n");
+            hasWarning = true;
+        } else if (record.getSugar() < 70) {
+            message.append("⚠️ Low blood sugar level detected!\n");
             hasWarning = true;
         }
 
         if (record.getPulse() > 100) {
             message.append("⚠️ High pulse rate detected!\n");
             hasWarning = true;
+        } else if (record.getPulse() < 60) {
+            message.append("⚠️ Low pulse rate detected!\n");
+            hasWarning = true;
         }
 
-        if (record.getTemp() > 37.5) {
+        if (record.getTemp() > 37.5f) { // use float literal
             message.append("⚠️ Fever detected!\n");
+            hasWarning = true;
+        } else if (record.getTemp() < 36.0f) {
+            message.append("⚠️ Low body temperature detected!\n");
             hasWarning = true;
         }
 
         if (!hasWarning) {
             message.append("✅ All readings are normal.");
         } else {
-            // Send email to the logged-in elder
+
             emailService.sendEmail(
                     elder.getEmail(),
                     "⚠️ Health Alert!",

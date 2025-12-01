@@ -14,11 +14,17 @@ import org.springframework.web.bind.annotation.RestController;
 import com.eldercare.eldercare.config.JwtUtil;
 import com.eldercare.eldercare.model.CareGiver;
 import com.eldercare.eldercare.model.CareRequest;
+import com.eldercare.eldercare.model.DailyHealthRecord;
 import com.eldercare.eldercare.service.CareRequestService;
 import com.eldercare.eldercare.service.UserService;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import com.eldercare.eldercare.model.Elder;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -186,6 +192,35 @@ public class CareTakerRequestController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Failed to reject request: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/request/records")
+    public Map<String, Object> getAllRecords(HttpServletRequest request) {
+        Map<String, Object> response = new HashMap<>();
+
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Missing or Invalid Authorization header");
+        }
+
+        String token = authHeader.substring(7);
+
+        // Check role
+        String role = jwtUtil.extractRole(token);
+        if (role == null || !role.equalsIgnoreCase("Elder")) {
+            throw new RuntimeException("Access denied: Only Elders can access health records");
+        }
+
+        // Extract elder_id from token
+        String elderId = jwtUtil.extractElderId(token);
+
+        // Fetch all health records for this elder
+        List<CareRequest> records = careRequestService.findAllByElderId(elderId);
+
+        response.put("records", records);
+        response.put("count", records.size());
+
+        return response;
     }
 
 }

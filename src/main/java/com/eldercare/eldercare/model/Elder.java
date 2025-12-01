@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
@@ -41,7 +42,7 @@ public class Elder {
     private List<MedicationSchedule> medicationSchedules;
 
     @OneToMany(mappedBy = "elder", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonIgnoreProperties({ "elder" })
     private List<CareRequest> careRequests;
 
     // Parameterized constructor

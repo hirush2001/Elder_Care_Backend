@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.eldercare.eldercare.model.CareGiver;
 import com.eldercare.eldercare.model.CareRequest;
+import com.eldercare.eldercare.model.DailyHealthRecord;
 import com.eldercare.eldercare.repository.CareRequestRepository;
 import com.eldercare.eldercare.repository.CareTakerRepository;
 
@@ -74,6 +75,10 @@ public class CareRequestService {
 
     public List<CareRequest> getRequestsForCaregiver(String caregiverId) {
         return careRequestRepository.findByCareIdAndFetchElder(caregiverId);
+    }
+
+    public List<CareRequest> findAllByElderId(String elderId) {
+        return careRequestRepository.findAllByElder_ElderId(elderId);
     }
 
 }
