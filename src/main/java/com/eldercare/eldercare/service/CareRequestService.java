@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import com.eldercare.eldercare.model.CareGiver;
 import com.eldercare.eldercare.model.CareRequest;
 import com.eldercare.eldercare.model.DailyHealthRecord;
+import com.eldercare.eldercare.model.Elder;
+import com.eldercare.eldercare.repository.ElderProfileRepository;
 import com.eldercare.eldercare.repository.CareRequestRepository;
 import com.eldercare.eldercare.repository.CareTakerRepository;
 
@@ -15,11 +17,13 @@ import com.eldercare.eldercare.repository.CareTakerRepository;
 public class CareRequestService {
     private final CareRequestRepository careRequestRepository;
     private final CareTakerRepository careTakerRepository;
+    private final EmailService emailService;
 
     public CareRequestService(CareRequestRepository careRequestRepository,
-            CareTakerRepository careTakerRepository) {
+            CareTakerRepository careTakerRepository, EmailService emailService) {
         this.careRequestRepository = careRequestRepository;
         this.careTakerRepository = careTakerRepository;
+        this.emailService = emailService;
     }
 
     public CareRequest saveRequest(CareRequest careRequest) {
@@ -79,6 +83,62 @@ public class CareRequestService {
 
     public List<CareRequest> findAllByElderId(String elderId) {
         return careRequestRepository.findAllByElder_ElderId(elderId);
+    }
+
+    public String requestEmail(CareRequest careRequest, Elder elder) {
+        String status = careRequest.getStatus();
+        StringBuilder message = new StringBuilder();
+        String subject = "";
+
+        if (status == null) {
+            return "Invalid status: null";
+        }
+
+        String statusLower = status.toLowerCase();
+
+        if (statusLower.equals("accepted")) {
+
+            subject = "Care Request Accepted ✔";
+
+            message.append("Dear ")
+                    .append(elder.getFullName())
+                    .append(",\n\n")
+                    .append("Good news! Your care request (Request ID: ")
+                    .append(careRequest.getRequestId())
+                    .append(") has been *accepted* by the caregiver.\n")
+                    .append("The caregiver will contact you soon.\n\n")
+                    .append("Thank you,\nElderCare Support Team");
+
+            emailService.sendEmail(elder.getEmail(), subject, message.toString());
+
+            return "Accepted email sent.";
+
+        }
+
+        if (statusLower.equals("rejected")) {
+
+            subject = "Care Request Rejected ❗";
+
+            message.append("Dear ")
+                    .append(elder.getFullName())
+                    .append(",\n\n")
+                    .append("We regret to inform you that your care request (Request ID: ")
+                    .append(careRequest.getRequestId())
+                    .append(") has been *rejected* by the caregiver.\n")
+                    .append("You may try sending a request to another caregiver.\n\n")
+                    .append("Thank you,\nElderCare Support Team");
+
+            emailService.sendEmail(elder.getEmail(), subject, message.toString());
+
+            return "Rejected email sent.";
+
+        }
+
+        if (statusLower.equals("pending")) {
+            return "Request is still pending — no email sent.";
+        }
+
+        return "Unknown status: " + status;
     }
 
 }

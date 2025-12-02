@@ -78,10 +78,13 @@ public class CareTakerRequestController {
                 careRequest.setRequestDate(java.time.LocalDate.now().toString());
             }
 
+            String message = careRequestService.requestEmail(careRequest, elder);
+
             careRequest.setStatus("Pending");
 
             CareRequest saved = careRequestService.saveRequest(careRequest);
-
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", message);
             return ResponseEntity.ok("Successfully added Care Request with ID: " + saved.getRequestId());
 
         } catch (Exception e) {
@@ -170,9 +173,16 @@ public class CareTakerRequestController {
                     .orElseThrow(() -> new RuntimeException("Request not found with ID: " + requestId));
 
             request.setStatus("Accepted");
-            careRequestService.saveRequest(request);
+            CareRequest saved = careRequestService.saveRequest(request);
 
-            return ResponseEntity.ok("Request accepted successfully");
+            Elder elder = saved.getElder();
+            if (elder == null || elder.getEmail() == null) {
+                return ResponseEntity.badRequest().body("Elder email not found.");
+            }
+
+            String message = careRequestService.requestEmail(saved, elder);
+
+            return ResponseEntity.ok("Request accepted successfully. " + message);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Failed to accept request: " + e.getMessage());
         }
@@ -186,9 +196,16 @@ public class CareTakerRequestController {
                     .orElseThrow(() -> new RuntimeException("Request not found with ID: " + requestId));
 
             request.setStatus("Rejected");
-            careRequestService.saveRequest(request);
+            CareRequest saved = careRequestService.saveRequest(request);
 
-            return ResponseEntity.ok("Request rejected successfully");
+            Elder elder = saved.getElder();
+            if (elder == null || elder.getEmail() == null) {
+                return ResponseEntity.badRequest().body("Elder email not found.");
+            }
+
+            String message = careRequestService.requestEmail(saved, elder);
+
+            return ResponseEntity.ok("Request rejected successfully. " + message);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Failed to reject request: " + e.getMessage());
         }
