@@ -78,13 +78,12 @@ public class CareTakerRequestController {
                 careRequest.setRequestDate(java.time.LocalDate.now().toString());
             }
 
-            String message = careRequestService.requestEmail(careRequest, elder);
-
             careRequest.setStatus("Pending");
 
             CareRequest saved = careRequestService.saveRequest(careRequest);
-            Map<String, Object> response = new HashMap<>();
-            response.put("message", message);
+
+            careRequestService.sendRequestEmail(saved, elder, careGiver);
+
             return ResponseEntity.ok("Successfully added Care Request with ID: " + saved.getRequestId());
 
         } catch (Exception e) {

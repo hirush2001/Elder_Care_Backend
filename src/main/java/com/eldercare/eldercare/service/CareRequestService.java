@@ -141,4 +141,32 @@ public class CareRequestService {
         return "Unknown status: " + status;
     }
 
+    public String sendRequestEmail(CareRequest careRequest, Elder elder, Elder caregiver) {
+
+        StringBuilder message = new StringBuilder();
+        String status = careRequest.getStatus().toLowerCase();
+        String subject;
+
+        if (status.equals("pending")) {
+
+            subject = "New Care Request Pending ⏳";
+
+            message.append("Hello ")
+                    .append(caregiver.getFullName()).append(",\n\n")
+                    .append("You have received a new care request from Elder:\n")
+                    .append("Elder ID: ").append(elder.getElderId()).append("\n")
+                    .append("Elder Name: ").append(elder.getFullName()).append("\n\n")
+                    .append("Request ID: ").append(careRequest.getRequestId()).append("\n")
+                    .append("Please log in to your dashboard to review the request.\n\n")
+                    .append("Thank you,\nElderCare Support Team");
+
+            // ✔️ send email to caregiver, not elder
+            emailService.sendEmail(caregiver.getEmail(), subject, message.toString());
+
+            return "Pending email sent to caregiver.";
+        }
+
+        return "No email sent.";
+    }
+
 }
