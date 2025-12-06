@@ -84,7 +84,7 @@ public class CareTakerRequestController {
 
             careRequestService.sendRequestEmail(saved, elder, careGiver);
 
-            return ResponseEntity.ok("Successfully add Care Request with ID: " + saved.getRequestId());
+            return ResponseEntity.ok("Successfully added Care Request with ID: " + saved.getRequestId());
 
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error adding Request: " + e.getMessage());
