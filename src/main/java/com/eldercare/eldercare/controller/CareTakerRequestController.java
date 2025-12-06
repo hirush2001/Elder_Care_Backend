@@ -97,7 +97,7 @@ public class CareTakerRequestController {
         try {
             List<CareRequest> requests = careRequestService.getAllRequests();
             if (requests.isEmpty()) {
-                return ResponseEntity.ok(" No care requests found.");
+                return ResponseEntity.ok(" No care request found.");
             }
             return ResponseEntity.ok(requests);
         } catch (Exception e) {
