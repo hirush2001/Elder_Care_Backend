@@ -93,7 +93,7 @@ public class AuthController {
 
             // 🔹 Generate JWT token
             String token = jwtUtil.generateToken(user.getEmail(), user.getRole(), user.getElderId());
-            System.out.println("Token generated successfully: " + token);
+            System.out.println("Token generate successfully: " + token);
 
             return ResponseEntity.ok(Map.of(
                     "token", token,
