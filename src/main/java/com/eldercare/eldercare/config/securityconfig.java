@@ -33,7 +33,9 @@ public class securityconfig {
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
                     config.setAllowCredentials(true);
-                    config.setAllowedOrigins(List.of("http://localhost:5173")); // frontend origin
+                    config.setAllowedOrigins(
+                            List.of("http://localhost:5173", "https://profound-dango-7e78a2.netlify.app")); // frontend
+                                                                                                            // origin
                     config.setAllowedHeaders(List.of("*"));
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     return config;
