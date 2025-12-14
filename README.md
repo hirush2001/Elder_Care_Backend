@@ -155,8 +155,4 @@ This project is developed for **academic purposes** and is open for learning and
 
 ---
 
-## 👨‍💻 Author
 
-**Kavindu Hirushan**
-Computer Science & Statistics
-Full Stack Developer
