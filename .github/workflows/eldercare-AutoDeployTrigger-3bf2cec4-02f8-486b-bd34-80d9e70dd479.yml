@@ -24,7 +24,6 @@ jobs:
           java-version: 21
 
       - name: Build Spring Boot
-        working-directory: ./Elder_Care_Backend
         run: mvn clean package -DskipTests
 
       - name: Azure Login
@@ -37,8 +36,8 @@ jobs:
       - name: Deploy to Azure Container Apps
         uses: azure/container-apps-deploy-action@v2
         with:
-          appSourcePath: ./Elder_Care_Backend
-          dockerfilePath: ./Elder_Care_Backend/Dockerfile
+          appSourcePath: .
+          dockerfilePath: ./Dockerfile
           registryUrl: eldercare.azurecr.io
           registryUsername: ${{ secrets.ELDERCARE_REGISTRY_USERNAME }}
           registryPassword: ${{ secrets.ELDERCARE_REGISTRY_PASSWORD }}
