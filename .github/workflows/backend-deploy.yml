@@ -1,0 +1,43 @@
+name: Backend Deploy
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "Elder_Care_Backend/**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Build Spring Boot App
+        working-directory: ./Elder_Care_Backend
+        run: mvn clean package -DskipTests
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy to Azure Container Apps
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          appSourcePath: ./Elder_Care_Backend
+          dockerfilePath: ./Elder_Care_Backend/Dockerfile
+          acrName: ${{ secrets.ACR_NAME }}
+          containerAppName: eldercare-app
+          resourceGroup: eldercare-rg
+          targetPort: 8080
