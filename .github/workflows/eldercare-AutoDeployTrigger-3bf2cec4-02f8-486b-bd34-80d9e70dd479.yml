@@ -41,8 +41,9 @@ jobs:
           registryUrl: eldercare.azurecr.io
           registryUsername: ${{ secrets.ELDERCARE_REGISTRY_USERNAME }}
           registryPassword: ${{ secrets.ELDERCARE_REGISTRY_PASSWORD }}
-          containerAppName: eldercareconatinerapp
+          containerAppName: eldercare
           resourceGroup: eldercare
           imageToBuild: eldercare.azurecr.io/eldercare:${{ github.sha }}
           targetPort: 8080
+
 
