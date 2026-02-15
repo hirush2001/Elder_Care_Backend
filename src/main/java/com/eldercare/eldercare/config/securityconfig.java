@@ -34,8 +34,9 @@ public class securityconfig {
                     CorsConfiguration config = new CorsConfiguration();
                     config.setAllowCredentials(true);
                     config.setAllowedOrigins(
-                            List.of("http://localhost:5173", "https://profound-dango-7e78a2.netlify.app")); // frontend
-                                                                                                            // origin
+                            List.of("http://localhost:5173", "https://profound-dango-7e78a2.netlify.app",
+                                    "https://eldercarefrontendcontainerapp.salmonhill-4f48000a.southeastasia.azurecontainerapps.io")); // frontend
+                    // origin
                     config.setAllowedHeaders(List.of("*"));
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     return config;
