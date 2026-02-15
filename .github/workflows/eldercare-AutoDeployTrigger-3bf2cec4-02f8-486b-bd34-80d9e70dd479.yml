@@ -45,3 +45,5 @@ jobs:
           resourceGroup: eldercare
           imageToBuild: eldercare.azurecr.io/eldercare:${{ github.sha }}
           targetPort: 8080
+
+
