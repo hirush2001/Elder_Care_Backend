@@ -144,7 +144,7 @@ public class AuthController {
         }
     }
 
-    // UPDATE Elder by ID
+    // UPDATE Elder by ID securely
     @PutMapping("/elder/{id}")
     public ResponseEntity<?> updateElderById(@PathVariable String id, @RequestBody Elder updateData) {
         try {
