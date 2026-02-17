@@ -103,6 +103,7 @@ public class securityconfig {
                         .requestMatchers("/api/auth/**", "/medical/**", "/caretaker/**", "/profile/**",
                                 "/actuator/health")
                         .permitAll()
+                        .requestMatchers("/api/reviews/**").authenticated()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
