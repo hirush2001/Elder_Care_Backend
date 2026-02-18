@@ -1,5 +1,6 @@
 package com.eldercare.eldercare.model;
 
+// JPA annotations used to map this class to a database table
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -16,9 +17,14 @@ public class CareGiver {
     @Column(name = "Full_Name", nullable = false)
     private String fullname;
 
+    // Email must be unique so duplicate accounts are prevented.
     @Column(name = "Email", nullable = false, unique = true)
     private String email;
 
+    /*
+     * Contact number length limited to 15 characters.
+     * Cannot be null.
+     */
     @Column(name = "Contact_Number", nullable = false, length = 15)
     private String contactNumber;
 
