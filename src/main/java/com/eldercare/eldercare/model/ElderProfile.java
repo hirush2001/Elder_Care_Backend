@@ -18,7 +18,8 @@ import lombok.ToString;
 @Data
 @Table(name = "elder_profile")
 public class ElderProfile {
-
+    // Profile details of the elder, linked to the Elder entity via a one-to-one
+    // relationship
     @Id
     @Column(name = "Reg_id", nullable = false, unique = true)
     private String regId;
