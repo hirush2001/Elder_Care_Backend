@@ -29,10 +29,17 @@ public class Elder {
     @Column(name = "full_name")
     private String fullName;
 
+    /**
+     * One Elder → Many Daily Health Records
+     * 
+     * mappedBy = "elder" → relation controlled by DailyHealthRecord entity
+     * 
+     */
     @OneToMany(mappedBy = "elder", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<DailyHealthRecord> healthRecords;
 
+    // One Elder → One ElderProfile
     @OneToOne(mappedBy = "elder", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private ElderProfile elderProfile;
@@ -41,6 +48,11 @@ public class Elder {
     @JsonManagedReference
     private List<MedicationSchedule> medicationSchedules;
 
+    /**
+     * One Elder → Many Care Requests
+     * JsonIgnoreProperties prevents infinite loop:
+     * Elder → CareRequest → Elder → CareRequest → ...
+     */
     @OneToMany(mappedBy = "elder", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties({ "elder" })
     private List<CareRequest> careRequests;
