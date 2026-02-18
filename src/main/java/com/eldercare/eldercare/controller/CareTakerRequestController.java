@@ -43,6 +43,7 @@ public class CareTakerRequestController {
 
     }
 
+    // Create a new care request from an Elder to a Caregiver
     @PostMapping("/request/{req_id}")
     public ResponseEntity<?> addCareReq(
             @RequestBody CareRequest careRequest,
@@ -50,12 +51,14 @@ public class CareTakerRequestController {
             @PathVariable("req_id") String req_id) {
 
         try {
+            // Extract JWT token (remove "Bearer ")
             String token = authHeader.substring(7);
 
-            // Elder who is sending request
+            // Identify elder sending request
             String elderId = jwtUtil.extractElderId(token);
             Elder elder = userService.findById(elderId);
 
+            // Security validation
             if (!elder.getRole().equalsIgnoreCase("elder")) {
                 return ResponseEntity.badRequest().body("Invalid elder token.");
             }
